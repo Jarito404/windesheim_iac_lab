@@ -1,0 +1,19 @@
+#cloud-config
+users:
+  - name: iacuser
+    gecos: "IAC User"
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo
+    shell: /bin/bash
+    lock_passwd: false
+    ssh_authorized_keys:
+      - PLACEHOLDER_PUBKEY  # wordt vervangen in Terraform via string replacement (zie main.tf)
+
+package_update: true
+packages:
+  - wget
+  - ntpdate
+
+runcmd:
+  - [ sh, -c, "ntpdate -q 0.nl.pool.ntp.org || true" ]
+  - [ sh, -c, "echo 'cloud-init finished' >> /var/log/cloud-init-terraform.log" ]
